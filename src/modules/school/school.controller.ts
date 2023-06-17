@@ -4,9 +4,14 @@ import { SchoolDto, SchoolQueryDto } from './school.dto';
 import { SchoolTable } from './school.entity';
 import { ApiOperation, ApiTags } from '@nestjs/swagger'
 import {Response, Request, response} from 'express';
+import { AuthGuard } from '../auth/auth.guard';
+import { Roles } from '../auth/roles.decorator';
+import { Role } from '../user/user.enum';
 
 @ApiTags('School')
 @Controller('school')
+@UseGuards(AuthGuard)
+@Roles(Role.ADMIN_ADMIN)
 export class SchoolController{
     constructor(
         private readonly schoolService: SchoolService

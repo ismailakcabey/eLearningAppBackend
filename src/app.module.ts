@@ -8,6 +8,7 @@ import { SchoolModule } from './modules/school/school.module';
 import { SchoolTable } from './modules/school/school.entity';
 import { UserTable } from './modules/user/user.entity';
 import { UserModule } from './modules/user/user.module';
+import { AuthModule } from './modules/auth/auth.module';
 @Module({
   imports: [
     ConfigModule.forRoot({isGlobal: true}),
@@ -35,7 +36,8 @@ import { UserModule } from './modules/user/user.module';
       inject: [ConfigService]
     }),
     SchoolModule,
-    UserModule
+    UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
