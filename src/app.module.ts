@@ -6,6 +6,8 @@ import { JwtModule } from '@nestjs/jwt'
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SchoolModule } from './modules/school/school.module';
 import { SchoolTable } from './modules/school/school.entity';
+import { UserTable } from './modules/user/user.entity';
+import { UserModule } from './modules/user/user.module';
 @Module({
   imports: [
     ConfigModule.forRoot({isGlobal: true}),
@@ -27,12 +29,13 @@ import { SchoolTable } from './modules/school/school.entity';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [SchoolTable],
+        entities: [SchoolTable,UserTable],
         synchronize: true,
       }),
       inject: [ConfigService]
     }),
-    SchoolModule
+    SchoolModule,
+    UserModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -9,6 +9,7 @@ import { QueryDto } from 'src/entitys/query.dto'
 import * as XLSX from 'xlsx';
 import * as PATH from 'path'
 import * as AWS from 'aws-sdk';
+import { excelExport } from 'src/helpers/excel.export';
 @Injectable()
 export class SchoolService implements SchoolServiceInterface {
 
@@ -62,59 +63,12 @@ export class SchoolService implements SchoolServiceInterface {
         return this.schoolRepository.save(school);
     }
 
-    async s3Upload(file,fileName,fileType){
-        AWS.config.update({
-            accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-            secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-          });
-        const s3 = new AWS.S3()
-        
-       try {
-        await s3.putObject({
-            Body:file,
-            Bucket:process.env.AWS_BUCKET,
-            Key:`${fileName}${new Date}.${fileType}`
-        }).promise()
-       } catch (error) {
-        Logger.error(error)
-       }
-    }
 
     async excelExport(query: SchoolQueryDto) {
         const queryData: QueryDto = JSON.parse(query.query)
         
         const [schools, count] = await this.schoolRepository.findAndCount(queryData as FindManyOptions<SchoolTable>);
-
-        /*
-
-        S3 FILE UPLOAD
-
-        const workSheet = XLSX.utils.json_to_sheet(schools);
-        const workBook = XLSX.utils.book_new();
-    
-        XLSX.utils.book_append_sheet(workBook, workSheet, `schools`)
-        
-        XLSX.write(workBook, { bookType: 'xlsx', type: "buffer" })
-    
-        XLSX.write(workBook, { bookType: "xlsx", type: "binary" })
-    
-        const buffer = XLSX.write(workBook, { bookType: 'xlsx', type: 'buffer' });
-        this.s3Upload(buffer,"schools","xlsx")
-
-        */
-        const ws = XLSX.utils.json_to_sheet(schools);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, 'Schools');
-        const fileName = 'schools.xlsx';
-        const currentDate = new Date().toISOString().replace(/:/g, '-').substring(0, 19);
-        const filePath = PATH.join('assets', `${fileName}${currentDate}.xlsx`);
-
-        if (!fs.existsSync('assets')) {
-            fs.mkdirSync('assets');
-        }
-
-        XLSX.writeFile(wb, filePath);
-        return filePath;
+        return excelExport(schools,'schools')
     }
 
 }
