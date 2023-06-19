@@ -4,8 +4,8 @@
               where?: object
               take: number
               skip: number
-              relations: []
-              select: []
+              relations: Array<string>
+              select: Array<string>
               loadRelationIds: boolean
           }
     }

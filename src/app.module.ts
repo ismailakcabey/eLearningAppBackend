@@ -9,6 +9,8 @@ import { SchoolTable } from './modules/school/school.entity';
 import { UserTable } from './modules/user/user.entity';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { LessonTable } from './modules/lesson/lesson.entity';
+import { LessonModule } from './modules/lesson/lesson.module';
 @Module({
   imports: [
     ConfigModule.forRoot({isGlobal: true}),
@@ -30,7 +32,7 @@ import { AuthModule } from './modules/auth/auth.module';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [SchoolTable,UserTable],
+        entities: [SchoolTable,UserTable,LessonTable],
         synchronize: true,
       }),
       inject: [ConfigService]
@@ -38,6 +40,7 @@ import { AuthModule } from './modules/auth/auth.module';
     SchoolModule,
     UserModule,
     AuthModule,
+    LessonModule
   ],
   controllers: [AppController],
   providers: [AppService],

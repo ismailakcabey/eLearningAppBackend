@@ -37,7 +37,6 @@ import { UserService } from '../user/user.service';
         if (user == null || user == undefined) {
           throw new UnauthorizedException();
         }
-        console.log(JSON.stringify(user));
       } catch (e){
         throw new UnauthorizedException();
       }
