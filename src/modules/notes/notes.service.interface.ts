@@ -10,5 +10,4 @@ export interface NotesServiceInterface{
     findNotesById(id:number):Promise<NotesTable>
     deleteNotesById(id:number):Promise<boolean>
     updateNotesById(id:number,notes:NotesDto):Promise<NotesTable>
-    excelExport(query:NotesQueryDto)
 }

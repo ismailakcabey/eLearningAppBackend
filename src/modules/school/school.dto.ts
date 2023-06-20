@@ -1,6 +1,7 @@
-import { IsString } from 'class-validator'
+import { IsString, ValidateIf } from 'class-validator'
 export class SchoolDto {
 
+    @ValidateIf((object, value) => value !== undefined)
     @IsString()
     name?: string
 
