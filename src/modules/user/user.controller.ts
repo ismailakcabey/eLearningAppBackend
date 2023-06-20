@@ -67,7 +67,7 @@ export class UserController {
         @Query() user: UserQueryDto,
         @Req() request: Request
     ) {
-        return await this.userService.excelExportUser(user);
+        return await this.userService.excelExportUser(user,request);
     }
 
     @ApiOperation({ summary: 'User Delete', description: 'API to use to delete user' })

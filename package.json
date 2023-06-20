@@ -29,6 +29,8 @@
     "@nestjs/swagger": "^6.3.0",
     "@nestjs/typeorm": "^9.0.1",
     "aws-sdk": "^2.1397.0",
+    "cache-manager": "^5.2.3",
+    "cache-manager-redis-store": "^3.0.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "exceljs": "^4.3.0",

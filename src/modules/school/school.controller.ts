@@ -73,7 +73,7 @@ export class SchoolController {
         @Req() request: Request
     ): Promise<any> {
 
-        return this.schoolService.excelExport(school);
+        return this.schoolService.excelExport(school,request);
     }
 
 

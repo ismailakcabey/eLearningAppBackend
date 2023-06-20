@@ -10,10 +10,15 @@ import * as XLSX from 'xlsx';
 import * as PATH from 'path'
 import * as AWS from 'aws-sdk';
 import { excelExport } from 'src/helpers/excel.export';
+import { Response, Request, response } from 'express';
+import { CacheManagerService } from 'src/helpers/cache'
+import { JwtService } from '@nestjs/jwt'
 @Injectable()
 export class SchoolService implements SchoolServiceInterface {
 
     constructor(
+        private jwtService: JwtService,
+        private readonly cacheManager:CacheManagerService,
         @InjectRepository(SchoolTable) private readonly schoolRepository: Repository<SchoolTable>
     ) { }
 
@@ -64,9 +69,21 @@ export class SchoolService implements SchoolServiceInterface {
     }
 
 
-    async excelExport(query: SchoolQueryDto) {
+    async excelExport(query: SchoolQueryDto,req:Request) {
+        const authHeader = req.headers.authorization;
+        const token = authHeader.split(" ")[1];
+        const payload = await this.jwtService.verifyAsync(
+            token,
+            {
+              secret: "secret"
+            }
+          );
+          const redisData = await this.cacheManager.get(`${payload.id}`)
+          if(redisData !== null){
+            return "yakın zamanda excel aldınız daha sonra tekrar deneyiniz"
+          }
         const queryData: QueryDto = JSON.parse(query.query)
-        
+        const redisSave = await this.cacheManager.set(`${payload.id}`,true,12)
         const [schools, count] = await this.schoolRepository.findAndCount(queryData as FindManyOptions<SchoolTable>);
         return excelExport(schools,'schools')
     }

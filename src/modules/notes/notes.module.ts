@@ -4,6 +4,7 @@ import { UserModule } from "../user/user.module";
 import { NotesTable } from "./notes.entity";
 import { NotesController } from "./notes.controller";
 import { NotesService } from "./notes.service";
+import { CacheManagerService } from "src/helpers/cache";
 
 @Module({
     imports: [
@@ -14,7 +15,8 @@ import { NotesService } from "./notes.service";
         NotesController
     ],
     providers: [
-        NotesService
+        NotesService,
+        CacheManagerService
     ],
     exports: []
 })

@@ -7,11 +7,15 @@ import { FindManyOptions, Repository } from "typeorm";
 import { QueryDto } from "src/entitys/query.dto";
 import { SchoolTable } from "../school/school.entity";
 import { excelExport } from "src/helpers/excel.export";
-
+import { Response, Request, response } from 'express';
+import { JwtService } from "@nestjs/jwt";
+import { CacheManagerService } from "src/helpers/cache";
 @Injectable()
 export class LessonService implements LessonServiceInterface{
 
     constructor(
+        private readonly jwtService:JwtService,
+        private readonly cacheManager:CacheManagerService,
         @InjectRepository(LessonTable) private readonly lessonRepository: Repository<LessonTable>
     ){}
 
@@ -59,9 +63,21 @@ export class LessonService implements LessonServiceInterface{
         }
     }
 
-    async excelExport(query: LessonQueryDto) {
+    async excelExport(query: LessonQueryDto,req:Request) {
+        const authHeader = req.headers.authorization;
+        const token = authHeader.split(" ")[1];
+        const payload = await this.jwtService.verifyAsync(
+            token,
+            {
+              secret: "secret"
+            }
+          );
+          const redisData = await this.cacheManager.get(`${payload.id}`)
+          if(redisData !== null){
+            return "yakın zamanda excel aldınız daha sonra tekrar deneyiniz"
+          }
         const queryData: QueryDto = JSON.parse(query.query)
-        
+        const redisSave = await this.cacheManager.set(`${payload.id}`,true,12)
         const [lessons, count] = await this.lessonRepository.findAndCount(queryData as FindManyOptions<LessonTable>);
         return excelExport(lessons,'lessons')
     }

@@ -74,7 +74,7 @@ export class LessonController {
         @Query() lessons: LessonQueryDto,
         @Req() request: Request
     ): Promise<any> {
-        return this.lessonService.excelExport(lessons);
+        return this.lessonService.excelExport(lessons,request);
     }
 
 }

@@ -1,6 +1,6 @@
 import { SchoolDto, SchoolQueryDto } from "./school.dto";
 import { SchoolTable } from "./school.entity";
-
+import { Response, Request, response } from 'express';
 export interface SchoolServiceInterface{
     createSchool(schoolDto:SchoolDto):Promise<SchoolTable>;
     findSchool(schoolDto:SchoolQueryDto):Promise<{
@@ -10,5 +10,5 @@ export interface SchoolServiceInterface{
     findSchoolById(id:number):Promise<SchoolTable>;
     deleteSchoolById(id:number):Promise<boolean>
     updateSchoolById(id:number,schoolDto:SchoolDto):Promise<SchoolTable>;
-    excelExport(query:SchoolQueryDto)
+    excelExport(query:SchoolQueryDto,req:Request)
 }

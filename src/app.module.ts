@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { CacheModule, CacheStore, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config'
@@ -13,6 +13,8 @@ import { LessonTable } from './modules/lesson/lesson.entity';
 import { LessonModule } from './modules/lesson/lesson.module';
 import { NotesTable } from './modules/notes/notes.entity';
 import { NotesModule } from './modules/notes/notes.module';
+import { CacheManagerService } from './helpers/cache';
+import { redisStore } from 'cache-manager-redis-store';
 @Module({
   imports: [
     ConfigModule.forRoot({isGlobal: true}),
@@ -43,6 +45,20 @@ import { NotesModule } from './modules/notes/notes.module';
         synchronize: true,
       }),
       inject: [ConfigService]
+    }),
+    CacheModule.registerAsync({
+      isGlobal: true,
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        host:configService.get('REDIS_HOST'),
+        port:configService.get<number>('REDIS_PORT'),
+        isGlobal: true,
+        store: (await redisStore({
+          url: configService.get('REDIS_URL'),
+          ttl:300
+        })) as unknown as CacheStore,
+      }),
+      inject: [ConfigService],
     }),
     SchoolModule,
     UserModule,

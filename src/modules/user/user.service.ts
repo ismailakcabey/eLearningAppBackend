@@ -10,11 +10,16 @@ import * as AWS from 'aws-sdk';
 import { UserServiceInterface } from './user.service.interface';
 import { FindManyOptions, Repository } from 'typeorm';
 import { excelExport } from 'src/helpers/excel.export';
+import { Response, Request, response } from 'express';
+import { JwtService } from '@nestjs/jwt';
+import { CacheManagerService } from 'src/helpers/cache';
 const passwordHash = require('password-hash');
 @Injectable()
 export class UserService implements UserServiceInterface{
 
     constructor(
+        private readonly cacheManager: CacheManagerService,
+        private jwtService: JwtService,
         @InjectRepository(UserTable) private readonly userRepository: Repository<UserTable>
     ){}
 
@@ -63,8 +68,21 @@ export class UserService implements UserServiceInterface{
             return true;
         }
     }
-    async excelExportUser(query: UserQueryDto) {
+    async excelExportUser(query: UserQueryDto,req:Request) {
+        const authHeader = req.headers.authorization;
+        const token = authHeader.split(" ")[1];
+        const payload = await this.jwtService.verifyAsync(
+            token,
+            {
+              secret: "secret"
+            }
+          );
+          const redisData = await this.cacheManager.get(`${payload.id}`)
+          if(redisData !== null){
+            return "yakın zamanda excel aldınız daha sonra tekrar deneyiniz"
+          }
         const queryData: QueryDto = JSON.parse(query.query)
+        const redisSave = await this.cacheManager.set(`${payload.id}`,true,12)
         const [users, count] = await this.userRepository.findAndCount(queryData as FindManyOptions<UserTable>);
         return excelExport(users,'users')
     }

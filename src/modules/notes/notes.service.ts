@@ -5,12 +5,14 @@ import { NotesTable } from "./notes.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FindManyOptions, Repository } from "typeorm";
 import { QueryDto } from "src/entitys/query.dto";
+import { CacheManagerService } from "src/helpers/cache";
 
 @Injectable()
 export class NotesService implements NotesServiceInterface{
     
     constructor(
-        @InjectRepository(NotesTable) private readonly notesRepository: Repository<NotesTable>
+        @InjectRepository(NotesTable) private readonly notesRepository: Repository<NotesTable>,
+        private readonly cacheService: CacheManagerService
     ){}
 
     async createNotes(note: NotesDto): Promise<NotesTable> {

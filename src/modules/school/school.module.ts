@@ -4,6 +4,7 @@ import { SchoolTable } from "./school.entity";
 import { SchoolService } from "./school.service";
 import { SchoolController } from "./school.controller";
 import { UserModule } from "../user/user.module";
+import { CacheManagerService } from "src/helpers/cache";
 
 @Module({
     imports: [
@@ -14,7 +15,8 @@ import { UserModule } from "../user/user.module";
         SchoolController
     ],
     providers: [
-        SchoolService
+        SchoolService,
+        CacheManagerService
     ],
     exports: []
 })
