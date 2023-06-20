@@ -27,9 +27,21 @@ export class LessonController {
         return await this.lessonService.createLesson(lesson);
     }
 
+    @ApiOperation({ summary: 'Lesson View', description: 'API to use to list lesson' })
+    @Get()
+    async findLesson(
+        @Query() lesson: LessonQueryDto,
+        @Req() request: Request
+    ): Promise<{
+        data: LessonTable[],
+        count: number
+    }> {
+        return await this.lessonService.findLesson(lesson);
+    }
+
     @ApiOperation({ summary: 'Lesson View', description: 'API to use to view a lesson' })
     @Get(':id')
-    async findLesson(
+    async findLessonById(
         @Param('id') id: number,
         @Req() request: Request
     ): Promise<any> {

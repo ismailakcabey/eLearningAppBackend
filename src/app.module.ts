@@ -11,6 +11,8 @@ import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { LessonTable } from './modules/lesson/lesson.entity';
 import { LessonModule } from './modules/lesson/lesson.module';
+import { NotesTable } from './modules/notes/notes.entity';
+import { NotesModule } from './modules/notes/notes.module';
 @Module({
   imports: [
     ConfigModule.forRoot({isGlobal: true}),
@@ -32,7 +34,12 @@ import { LessonModule } from './modules/lesson/lesson.module';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
-        entities: [SchoolTable,UserTable,LessonTable],
+        entities: [
+          SchoolTable,
+          UserTable,
+          LessonTable,
+          NotesTable,
+        ],
         synchronize: true,
       }),
       inject: [ConfigService]
@@ -40,7 +47,8 @@ import { LessonModule } from './modules/lesson/lesson.module';
     SchoolModule,
     UserModule,
     AuthModule,
-    LessonModule
+    LessonModule,
+    NotesModule
   ],
   controllers: [AppController],
   providers: [AppService],
