@@ -15,6 +15,7 @@ import { NotesTable } from './modules/notes/notes.entity';
 import { NotesModule } from './modules/notes/notes.module';
 import { CacheManagerService } from './helpers/cache';
 import { redisStore } from 'cache-manager-redis-store';
+import { RabbitMQService } from './services/rabbitConsumer.service';
 @Module({
   imports: [
     ConfigModule.forRoot({isGlobal: true}),
@@ -67,6 +68,8 @@ import { redisStore } from 'cache-manager-redis-store';
     NotesModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    RabbitMQService],
 })
 export class AppModule {}

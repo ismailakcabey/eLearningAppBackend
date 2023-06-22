@@ -28,6 +28,8 @@
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/swagger": "^6.3.0",
     "@nestjs/typeorm": "^9.0.1",
+    "amqp": "^0.2.7",
+    "amqplib": "^0.10.3",
     "aws-sdk": "^2.1397.0",
     "cache-manager": "^5.2.3",
     "cache-manager-redis-store": "^3.0.1",

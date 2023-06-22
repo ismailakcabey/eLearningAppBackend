@@ -13,6 +13,7 @@ import { excelExport } from 'src/helpers/excel.export';
 import { Response, Request, response } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { CacheManagerService } from 'src/helpers/cache';
+import { sendQueueMessage } from 'src/helpers/queueMessage';
 const passwordHash = require('password-hash');
 @Injectable()
 export class UserService implements UserServiceInterface{
@@ -28,6 +29,7 @@ export class UserService implements UserServiceInterface{
         newUser.createdAt= new Date
         newUser.updatedAt = new Date
         newUser.password = passwordHash.generate(newUser?.password)
+        sendQueueMessage("email",newUser)
         return this.userRepository.save(newUser)
     }
 
