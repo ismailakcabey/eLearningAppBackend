@@ -1,6 +1,8 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { connect, Connection } from 'amqplib';
+import { emailSend } from 'src/helpers/emailSend';
+import { verifyMail } from 'src/utils/verifyMail';
 const amqp = require("amqplib")
 @Injectable()
 export class RabbitMQService implements OnModuleInit {
@@ -13,7 +15,7 @@ export class RabbitMQService implements OnModuleInit {
     try {
         this.emailReadConsume()
     } catch (error) {
-        console.log("error: " + error)
+        Logger.error("error: " + error)
     }
   }
 
@@ -24,9 +26,11 @@ export class RabbitMQService implements OnModuleInit {
         channel.consume("email",message=>{
         channel.ack(message)
         const user = JSON.parse(message.content.toString())
-        console.log(user)
+        
         if(user){
-            console.log("mesaj okundu gelen kullanıcı: "+ user)
+            const verifyEmail = verifyMail(user.id)
+            const sendEmail = emailSend(verifyEmail,user.email,user.name,"Doğrulama Maili","Hesabınızı lütfen doğrulayın")
+            
         }
     })
   }
